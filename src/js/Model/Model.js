@@ -18,7 +18,7 @@ export default class Model {
         this.setImmutableProperties();
 
         if (data[this.id]) {
-          return reject(new Error(`Oops, you are creating ${this.constructor.name}s too quickly!`));
+          return reject(new Error(`A ${this.constructor.name} instance with this id is currently being saved.`));
         }
       }
 
@@ -49,12 +49,39 @@ export default class Model {
     });
   }
 
-  static getStorageData(storageName = 'Model') {
-    let data = JSON.parse(localStorage.getItem(storageName));
+  static deserialize(data = null, storageName = 'Model') {
     if (!data) {
-      data = {};
+        return null;
     }
-    return data;
+
+    // Fastfix: to allow child class instanciation I need
+    // to register the child class under the window namespace.
+    // It must be avoided, but for now I haven't a better
+    // solution.
+    const instance = new window[storageName]();
+
+    Object.assign(instance, data);
+
+    instance.setImmutableProperties(data.id);
+    return instance;
+}
+
+  static get(id = null, storageName = 'Model') {
+    return new Promise((resolve, reject) => {
+      const data = Model.getStorageData(storageName);
+      if (id) {
+        return resolve(Model.deserialize(data[id], storageName));
+      }
+    });
+  }
+
+  static getAll(storageName = 'Model') {
+    const data = Model.getStorageData(storageName);
+    return Object.keys(data).map(id => Model.deserialize(data[id], storageName));
+  }
+
+  static getStorageData(storageName = 'Model') {
+    return JSON.parse(localStorage.getItem(storageName)) || {};
   }
 
 }

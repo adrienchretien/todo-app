@@ -2,11 +2,10 @@ import Model from "./Model";
 
 export default class Task extends Model {
 
-  constructor(title = '', description = '') {
+  constructor(title = '') {
     super();
 
     this.title = title;
-    this.description = description;
     this.isComplete = false;
   }
 
@@ -37,4 +36,11 @@ export default class Task extends Model {
     return super.get(id, 'Task');
   }
 
+  static getAll(id = null) {
+    return super.getAll('Task');
+  }
+
 }
+
+// This is part of a fastfix for Model.deserialize()
+window.Task = Task;

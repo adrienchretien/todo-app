@@ -5,46 +5,53 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Task list</title>
   <link rel="stylesheet" href="./dist/styles.css">
 </head>
 
 <body>
-  <main class="container">
-    <header class="mt-5 pt-5 text-center">
-      <h1>Todo app</h1>
-    </header>
+  <script id="one-column-layout" type="text/template">
+    <div class="container">
+      <header class="mt-5 pt-5 text-center">
+        <h1>{{ title }}</h1>
+      </header>
 
-    <section class="row">
-      <div class="col-12 col-md-9 mx-auto">
-        <div class="border rounded-3 my-5 py-3 px-4">
-          <form class="d-flex" action="">
-            <div class="flex-grow-1">
-              <label for="new-task" class="visually-hidden">Add a new task</label>
-              <input type="text" class="form-control" name="new-task" id="new-task" placeholder="New task" required>
-            </div>
-
-            <div class="ps-3">
-              <button type="submit" class="btn btn-primary">Add</button>
-            </div>
-          </form>
+      <main class="row">
+        <div class="col-12 col-md-9 mx-auto">
+          <section id="content">{{& content }}</section>
         </div>
-        <section id="content"></section>
-      </div>
-    </section>
+      </main>
+    </div>
+  </script>
 
-  </main>
+  <script id="task-form" type="text/template">
+    <div class="border rounded-3 my-5 py-3 px-4">
+      <form class="d-flex" action="">
+        <div class="flex-grow-1">
+          <label for="new-task" class="visually-hidden">Add a new task</label>
+          <input type="text" class="form-control" name="new-task" id="new-task" placeholder="New task" required>
+        </div>
 
-  <script id="checkbox-list" type="text/template">
-      <ul>
-        {{# checbkoxes }}
-          <li class="form-check">
-              <input class="form-check-input" type="checkbox" value="{{ value }}" id="{{ id }}">
-              <label class="form-check-label" for="{{ id }}">{{ label }}</label>
-          </li>
-          {{/ checbkoxes }}
-      </ul>
-    </script>
+        <div class="ps-3">
+          <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+      </form>
+    </div>
+  </script>
+
+  <script id="task-list" type="text/template">
+    <ul>
+      {{# tasks }}
+        <li class="form-check">
+          <input class="form-check-input" type="checkbox" {{# isComplete }}checked="checked"{{/ isComplete }} id="{{ id }}">
+          <label class="form-check-label" for="{{ id }}">{{ title }}</label>
+        </li>
+        {{/ tasks }}
+    </ul>
+    {{^ tasks }}
+      <div class="font-weight-bold text-center text-muted">Nothing to do! You're free!</div>
+    {{/ tasks }}
+  </script>
   <script src="./dist/app.js"></script>
 </body>
 

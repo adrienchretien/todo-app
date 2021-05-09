@@ -21,7 +21,7 @@ const paths = {
   },
   scripts: {
     src: resolve(__dirname, 'src/js/**/*.js'),
-    entries: ['src/js/app.js'],
+    entries: [ resolve(__dirname, 'src/js/app.js') ],
     dest: resolve(__dirname, 'dist/')
   }
 };

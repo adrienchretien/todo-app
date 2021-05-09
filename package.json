@@ -20,6 +20,7 @@
     "gulp-clean-css": "^4.3.0",
     "gulp-sass": "^4.1.0",
     "gulp-sourcemaps": "^3.0.0",
+    "mustache": "^4.2.0",
     "node-sass": "^4.14.1",
     "requirejs": "^2.3.6",
     "vinyl-buffer": "^1.0.1",
