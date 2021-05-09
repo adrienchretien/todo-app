@@ -40,16 +40,19 @@
   </script>
 
   <script id="task-list" type="text/template">
-    <ul>
+    <ul class="px-4">
       {{# tasks }}
-        <li class="form-check">
-          <input class="form-check-input" type="checkbox" {{# isComplete }}checked="checked"{{/ isComplete }} id="{{ id }}">
-          <label class="form-check-label" for="{{ id }}">{{ title }}</label>
+        <li class="d-flex w-100 mb-2">
+          <div class="form-check flex-grow-1">
+            <input class="form-check-input" type="checkbox" {{# isComplete }}checked="checked"{{/ isComplete }} id="{{ id }}">
+            <label class="form-check-label" for="{{ id }}">{{ title }}</label>
+          </div>
+          <button class="btn btn-danger btn-sm" data-delete-task="{{ id }}">Remove</button>
         </li>
         {{/ tasks }}
     </ul>
     {{^ tasks }}
-      <div class="font-weight-bold text-center text-muted">Nothing to do! You're free!</div>
+      <div class="my-5 fs-3 fw-bold text-center text-muted">Nothing to do! You're free!</div>
     {{/ tasks }}
   </script>
   <script src="./dist/app.js"></script>

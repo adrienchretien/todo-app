@@ -4,6 +4,24 @@
 export default class Model {
   constructor() { }
 
+  delete() {
+    return new Promise((resolve, reject) => {
+      if (!this.id) {
+          return reject(new Error(`Unable to destroy a ${this.constructor.name} without an ID!`));
+      }
+
+      const data = Model.getStorageData(this.constructor.name);
+      const instance = data[this.id];
+      
+      if (instance) {
+          delete data[this.id];
+      }
+      
+      localStorage.setItem(this.constructor.name, JSON.stringify(data));
+      resolve(instance);
+    });
+  }
+
   getNextId(storageName = 'Model') {
     const data = Model.getStorageData(storageName);
 
@@ -64,7 +82,7 @@ export default class Model {
 
     instance.setImmutableProperties(data.id);
     return instance;
-}
+  }
 
   static get(id = null, storageName = 'Model') {
     return new Promise((resolve, reject) => {

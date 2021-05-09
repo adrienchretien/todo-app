@@ -816,9 +816,31 @@ var TaskController = /*#__PURE__*/function () {
     key: "add",
     value: function add() {
       var title = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-      var task = new _Task["default"](title);
-      task.save();
-      window.location.reload();
+
+      if (title) {
+        var task = new _Task["default"](title);
+        task.save();
+        window.location.reload();
+      }
+    }
+  }, {
+    key: "remove",
+    value: function remove() {
+      var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      if (id) {
+        _Task["default"].get(id).then(function (task) {
+          return task["delete"]();
+        }).then(function (item) {
+          // const li = document
+          //   .querySelector(`[data-delete-task="${item.id}"]`)
+          //   .closest('li');
+          // li.parentNode.removeChild(li);
+          window.location.reload();
+        })["catch"](function (error) {
+          return console.warn(error);
+        });
+      }
     }
   }]);
 
@@ -850,6 +872,27 @@ var Model = /*#__PURE__*/function () {
   }
 
   _createClass(Model, [{
+    key: "delete",
+    value: function _delete() {
+      var _this = this;
+
+      return new Promise(function (resolve, reject) {
+        if (!_this.id) {
+          return reject(new Error("Unable to destroy a ".concat(_this.constructor.name, " without an ID!")));
+        }
+
+        var data = Model.getStorageData(_this.constructor.name);
+        var instance = data[_this.id];
+
+        if (instance) {
+          delete data[_this.id];
+        }
+
+        localStorage.setItem(_this.constructor.name, JSON.stringify(data));
+        resolve(instance);
+      });
+    }
+  }, {
     key: "getNextId",
     value: function getNextId() {
       var storageName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'Model';
@@ -859,28 +902,28 @@ var Model = /*#__PURE__*/function () {
   }, {
     key: "save",
     value: function save() {
-      var _this = this;
+      var _this2 = this;
 
       return new Promise(function (resolve, reject) {
-        var data = Model.getStorageData(_this.constructor.name);
+        var data = Model.getStorageData(_this2.constructor.name);
 
-        if (!_this.id) {
-          _this.setImmutableProperties();
+        if (!_this2.id) {
+          _this2.setImmutableProperties();
 
-          if (data[_this.id]) {
-            return reject(new Error("A ".concat(_this.constructor.name, " instance with this id is currently being saved.")));
+          if (data[_this2.id]) {
+            return reject(new Error("A ".concat(_this2.constructor.name, " instance with this id is currently being saved.")));
           }
         }
 
-        var error = _this.validate();
+        var error = _this2.validate();
 
         if (error) {
           return reject(error);
         }
 
-        data[_this.id] = _this.serialize();
-        localStorage.setItem(_this.constructor.name, JSON.stringify(data));
-        resolve(_this);
+        data[_this2.id] = _this2.serialize();
+        localStorage.setItem(_this2.constructor.name, JSON.stringify(data));
+        resolve(_this2);
       });
     }
   }, {
@@ -1211,11 +1254,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
+var _TaskController = _interopRequireDefault(require("../Controller/TaskController"));
+
 var _View2 = _interopRequireDefault(require("./View"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -1254,12 +1303,27 @@ var TaskList = /*#__PURE__*/function (_View) {
     return _this;
   }
 
+  _createClass(TaskList, [{
+    key: "addListeners",
+    value: function addListeners() {
+      document.addEventListener('click', this.clickHandler);
+    }
+  }, {
+    key: "clickHandler",
+    value: function clickHandler(event) {
+      if (event.target.dataset.deleteTask) {
+        var taskController = new _TaskController["default"]();
+        taskController.remove(parseInt(event.target.dataset.deleteTask));
+      }
+    }
+  }]);
+
   return TaskList;
 }(_View2["default"]);
 
 exports["default"] = TaskList;
 
-},{"./View":8}],8:[function(require,module,exports){
+},{"../Controller/TaskController":2,"./View":8}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
