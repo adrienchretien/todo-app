@@ -30,16 +30,22 @@ export default class TaskController {
         .then(task => {
           return task.delete();
         })
-        .then(item => {
-          // const li = document
-          //   .querySelector(`[data-delete-task="${item.id}"]`)
-          //   .closest('li');
-          
-          // li.parentNode.removeChild(li);
-
+        .then(task => {
           window.location.reload();
         })
         .catch(error => console.warn(error));
     }
+  }
+
+  updateCompleteness(id, isComplete) {
+    Task.get(id)
+      .then(task => {
+        task.isComplete = isComplete;
+        return task.save();
+      })
+      .then(task => {
+        window.location.reload();
+      })
+      .catch(error => console.warn(error));
   }
 }

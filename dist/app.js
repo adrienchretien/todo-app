@@ -831,16 +831,24 @@ var TaskController = /*#__PURE__*/function () {
       if (id) {
         _Task["default"].get(id).then(function (task) {
           return task["delete"]();
-        }).then(function (item) {
-          // const li = document
-          //   .querySelector(`[data-delete-task="${item.id}"]`)
-          //   .closest('li');
-          // li.parentNode.removeChild(li);
+        }).then(function (task) {
           window.location.reload();
         })["catch"](function (error) {
           return console.warn(error);
         });
       }
+    }
+  }, {
+    key: "updateCompleteness",
+    value: function updateCompleteness(id, isComplete) {
+      _Task["default"].get(id).then(function (task) {
+        task.isComplete = isComplete;
+        return task.save();
+      }).then(function (task) {
+        window.location.reload();
+      })["catch"](function (error) {
+        return console.warn(error);
+      });
     }
   }]);
 
@@ -1314,6 +1322,12 @@ var TaskList = /*#__PURE__*/function (_View) {
       if (event.target.dataset.deleteTask) {
         var taskController = new _TaskController["default"]();
         taskController.remove(parseInt(event.target.dataset.deleteTask));
+      }
+
+      if (event.target.type === 'checkbox') {
+        var _taskController = new _TaskController["default"]();
+
+        _taskController.updateCompleteness(parseInt(event.target.value), event.target.checked);
       }
     }
   }]);

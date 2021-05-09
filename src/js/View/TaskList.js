@@ -13,5 +13,9 @@ export default class TaskList extends View {
       const taskController = new TaskController();
       taskController.remove(parseInt(event.target.dataset.deleteTask));
     }
+    if (event.target.type === 'checkbox') {
+      const taskController = new TaskController();
+      taskController.updateCompleteness(parseInt(event.target.value), event.target.checked);
+    }
   }
 }
